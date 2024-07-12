@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
@@ -11,16 +11,25 @@ export class UserService {
   ) { }
 
   async create(createUserDto: CreateUserDto) {
-    const newUser = await this.prismaService.user.create({
-      data: { ...createUserDto, id: randomUUID() }
-    })
-
-    return { newUser };
+    try {
+      const newUser = await this.prismaService.user.create({
+        data: { ...createUserDto, id: randomUUID() }
+      })
+  
+      return { data: newUser };
+    } catch (error) {
+      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot create user' }, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   async findAll() {
-    const userList = await this.prismaService.user.findMany()
-    return { userList };
+    try {
+      const userList = await this.prismaService.user.findMany()
+
+      return { data: userList };
+    } catch (error) {
+      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot get users list' }, HttpStatus.INTERNAL_SERVER_ERROR)
+    }
   }
 
   async findOne(id: string) {
@@ -31,20 +40,38 @@ export class UserService {
         }
       })
 
-      if (!findUser) throw new Error(`Cannot find user with id: ${id}`)
-      // if (!findUser) return { message: `Cannot find user with id: ${id}` }
-      
-      return findUser
-    } catch {
-      return { message: `Cannot find user with id: ${id}` };
+      if (!findUser) throw new Error(`Cannot find user with id: ${id}`);
+            
+      return { data: findUser }
+    } catch (error) {
+      throw new HttpException({ status: HttpStatus.BAD_REQUEST, message: `Cannot find user with id: ${id}`}, HttpStatus.BAD_REQUEST);
     }
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    try {
+      const updatedUser = await this.prismaService.user.update({
+        data: updateUserDto,
+        where: {
+          id
+        }
+      })
+      return { data: updatedUser };
+    } catch (error) {
+      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot update user'}, HttpStatus.INTERNAL_SERVER_ERROR);
+    
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    try {
+      return await this.prismaService.user.delete({
+        where: {
+          id
+        }
+      })
+    } catch (error) {
+      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot delete user'}, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
