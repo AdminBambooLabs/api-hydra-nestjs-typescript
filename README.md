@@ -30,7 +30,10 @@
 
 ```bash
 $ pnpm install
+$ npx migrate dev
 ```
+
+and set correct db path in .env
 
 ## Running the app
 
