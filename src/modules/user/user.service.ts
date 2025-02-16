@@ -2,33 +2,44 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { randomUUID } from "node:crypto"
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private prismaService: PrismaService
-  ) { }
+  constructor(private prismaService: PrismaService) {}
 
   async create(createUserDto: CreateUserDto) {
     try {
       const newUser = await this.prismaService.user.create({
-        data: { ...createUserDto, id: randomUUID() }
-      })
-  
+        data: { ...createUserDto, id: randomUUID() },
+      });
+
       return { data: newUser };
     } catch (error) {
-      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot create user' }, HttpStatus.INTERNAL_SERVER_ERROR)
+      console.log('[error', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Cannot create user',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
   async findAll() {
     try {
-      const userList = await this.prismaService.user.findMany()
+      const userList = await this.prismaService.user.findMany();
 
       return { data: userList };
     } catch (error) {
-      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot get users list' }, HttpStatus.INTERNAL_SERVER_ERROR)
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Cannot get users list',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -36,15 +47,21 @@ export class UserService {
     try {
       const findUser = await this.prismaService.user.findUnique({
         where: {
-          id
-        }
-      })
+          id,
+        },
+      });
 
       if (!findUser) throw new Error(`Cannot find user with id: ${id}`);
-            
-      return { data: findUser }
+
+      return { data: findUser };
     } catch (error) {
-      throw new HttpException({ status: HttpStatus.BAD_REQUEST, message: `Cannot find user with id: ${id}`}, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: `Cannot find user with id: ${id}`,
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -53,13 +70,18 @@ export class UserService {
       const updatedUser = await this.prismaService.user.update({
         data: updateUserDto,
         where: {
-          id
-        }
-      })
+          id,
+        },
+      });
       return { data: updatedUser };
     } catch (error) {
-      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot update user'}, HttpStatus.INTERNAL_SERVER_ERROR);
-    
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Cannot update user',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -67,11 +89,17 @@ export class UserService {
     try {
       return await this.prismaService.user.delete({
         where: {
-          id
-        }
-      })
+          id,
+        },
+      });
     } catch (error) {
-      throw new HttpException({ status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Cannot delete user'}, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          message: 'Cannot delete user',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

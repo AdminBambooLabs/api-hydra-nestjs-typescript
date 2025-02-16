@@ -8,7 +8,7 @@ export class HealthController {
     public readonly packageVersion: string,
     @Inject('PACKAGE_NAME')
     public readonly packageName: string,
-    private prisma: PrismaService
+    private prisma: PrismaService,
   ) {}
 
   @Get()
