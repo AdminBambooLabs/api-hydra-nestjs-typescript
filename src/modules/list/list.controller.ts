@@ -8,8 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { ListService } from './list.service';
-import { CreateListDto } from './dto/create-list.dto';
-import { UpdateListDto } from './dto/update-list.dto';
 import { Prisma } from '@prisma/client';
 
 @Controller('list')
@@ -32,7 +30,10 @@ export class ListController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateListDto: UpdateListDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateListDto: Prisma.ListUpdateInput,
+  ) {
     return this.listService.update(id, updateListDto);
   }
 

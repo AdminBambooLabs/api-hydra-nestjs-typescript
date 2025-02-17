@@ -7,7 +7,13 @@ import { ListModule } from './modules/list/list.module';
 import { ListItemModule } from './modules/list-item/list-item.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), HealthModule, UserModule, ListModule, ListItemModule],
+  imports: [
+    ConfigModule.forRoot(),
+    HealthModule,
+    UserModule,
+    ListModule,
+    ListItemModule,
+  ],
   controllers: [],
   providers: [PrismaService],
 })

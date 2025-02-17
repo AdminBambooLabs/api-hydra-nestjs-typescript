@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { CreateListItemDto } from './dto/create-list-item.dto';
 import { UpdateListItemDto } from './dto/update-list-item.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class ListItemService {
   constructor(private prismaService: PrismaService) {}
 
-  async create(createListItemDto: Prisma.ListItemCreateInput) {
+  async create(createListItemDto: CreateListItemDto) {
     const createdListItem = await this.prismaService.listItem.create({
       data: createListItemDto,
     });
@@ -34,7 +33,6 @@ export class ListItemService {
       where: { id },
     });
     return { data: updatedListItem };
-    return `This action updates a #${id} listItem`;
   }
 
   async remove(id: string) {

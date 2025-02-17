@@ -10,14 +10,13 @@ import {
 import { ListItemService } from './list-item.service';
 import { CreateListItemDto } from './dto/create-list-item.dto';
 import { UpdateListItemDto } from './dto/update-list-item.dto';
-import { Prisma } from '@prisma/client';
 
 @Controller('list-item')
 export class ListItemController {
   constructor(private readonly listItemService: ListItemService) {}
 
   @Post()
-  create(@Body() createListItemDto: Prisma.ListItemCreateInput) {
+  create(@Body() createListItemDto: CreateListItemDto) {
     return this.listItemService.create(createListItemDto);
   }
 
@@ -34,7 +33,7 @@ export class ListItemController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateListItemDto: Prisma.ListItemUpdateInput,
+    @Body() updateListItemDto: UpdateListItemDto,
   ) {
     return this.listItemService.update(id, updateListItemDto);
   }
