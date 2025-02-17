@@ -5,7 +5,9 @@ import { ListItem } from 'src/modules/list-item/entities/list-item.entity';
 export class CreateListDto extends List {
   @IsString()
   @IsNotEmpty()
-  readonly name: string;
+  name: string;
 
-  readonly items: ListItem[];
+  @IsNotEmpty()
+  userId: string;
+  items: ListItem[];
 }

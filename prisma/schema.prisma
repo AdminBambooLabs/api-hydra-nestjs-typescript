@@ -21,6 +21,8 @@ model User {
   email    String @unique
   name     String
   password String
+
+  list List[]
 }
 
 model List {
@@ -28,8 +30,10 @@ model List {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name  String
-  items ListItem[]
+  name   String
+  items  ListItem[]
+  userId String
+  user   User       @relation(fields: [userId], references: [id])
 }
 
 model ListItem {
