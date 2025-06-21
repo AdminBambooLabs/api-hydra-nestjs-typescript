@@ -1,13 +1,11 @@
-import * as bcrypt from 'bcrypt';
+import * as argon2 from 'argon2';
 
-const saltRounds = 10;
-
-export function createHashFromPassword(password: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    try {
-      resolve(bcrypt.hash(password, saltRounds));
-    } catch {
-      reject('could not encrypt password');
-    }
-  });
+export async function createHashFromPassword(
+  password: string,
+): Promise<string> {
+  try {
+    return await argon2.hash(password);
+  } catch (error) {
+    throw new Error('could not encrypt password');
+  }
 }
