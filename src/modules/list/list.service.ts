@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { Prisma } from '@prisma/client';
+import { UpdateListDto } from './dto/update-list.dto';
 
 @Injectable()
 export class ListService {
@@ -29,10 +30,10 @@ export class ListService {
     return { data: listFound };
   }
 
-  async update(id: string, updateListDto: Prisma.ListUpdateInput) {
+  async update(id: string, updateListDto: UpdateListDto) {
     const updatedList = await this.prismaService.list.update({
-      data: updateListDto,
       where: { id },
+      data: updateListDto,
     });
 
     return { data: updatedList };

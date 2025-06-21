@@ -9,5 +9,6 @@ export class CreateListDto extends List {
 
   @IsNotEmpty()
   userId: string;
+
   items: ListItem[];
 }

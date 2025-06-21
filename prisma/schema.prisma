@@ -13,27 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  email    String @unique
-  name     String
-  password String
-
-  list List[]
-}
-
 model List {
   id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name   String
-  items  ListItem[]
-  userId String
-  user   User       @relation(fields: [userId], references: [id])
+  name  String
+  items ListItem[]
 }
 
 model ListItem {
