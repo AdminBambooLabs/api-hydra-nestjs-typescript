@@ -14,8 +14,38 @@ datasource db {
 }
 
 model User {
-  id    String  @id
-  email String  @unique
-  name  String
-  password  String
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email    String @unique
+  name     String
+  password String
+
+  lists List[]
+}
+
+model List {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name   String
+  items  ListItem[]
+  userId String
+  user   User       @relation(fields: [userId], references: [id])
+}
+
+model ListItem {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name        String
+  description String?
+
+  list   List   @relation(fields: [listId], references: [id])
+  listId String
+
+  checked Boolean @default(false)
 }

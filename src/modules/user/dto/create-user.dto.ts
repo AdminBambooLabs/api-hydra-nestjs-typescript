@@ -10,14 +10,14 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @Length(3, 30)
-  readonly name: string;
+  name: string;
 
   @IsEmail()
   @IsNotEmpty()
-  readonly email: string;
+  email: string;
 
   @IsString()
   @IsNotEmpty()
   @IsStrongPassword()
-  readonly password: string;
+  password: string;
 }

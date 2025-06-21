@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { randomUUID } from 'node:crypto';
+import { createHashFromPassword } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -10,13 +10,17 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     try {
+      const { password } = createUserDto;
+      const hashPwd = await createHashFromPassword(password);
       const newUser = await this.prismaService.user.create({
-        data: { ...createUserDto, id: randomUUID() },
+        data: { ...createUserDto, password: hashPwd },
       });
 
-      return { data: newUser };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: savedPwd, ...rest } = newUser;
+
+      return { data: rest };
     } catch (error) {
-      console.log('[error', error);
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -29,7 +33,17 @@ export class UserService {
 
   async findAll() {
     try {
-      const userList = await this.prismaService.user.findMany();
+      const userList = await this.prismaService.user.findMany({
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          lists: true,
+          createdAt: true,
+          updatedAt: true,
+          password: false,
+        },
+      });
 
       return { data: userList };
     } catch (error) {
@@ -49,6 +63,15 @@ export class UserService {
         where: {
           id,
         },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          lists: true,
+          createdAt: true,
+          updatedAt: true,
+          password: false,
+        },
       });
 
       if (!findUser) throw new Error(`Cannot find user with id: ${id}`);
@@ -67,10 +90,27 @@ export class UserService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
+      const newData = updateUserDto;
+      const pwd = updateUserDto?.password;
+
+      if (!!pwd) {
+        const hashPwd = await createHashFromPassword(pwd);
+        newData.password = hashPwd;
+      }
+
       const updatedUser = await this.prismaService.user.update({
-        data: updateUserDto,
+        data: newData,
         where: {
           id,
+        },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          lists: true,
+          createdAt: true,
+          updatedAt: true,
+          password: false,
         },
       });
       return { data: updatedUser };
