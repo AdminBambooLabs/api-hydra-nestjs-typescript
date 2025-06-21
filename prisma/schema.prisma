@@ -22,7 +22,7 @@ model User {
   name     String
   password String
 
-  list List[]
+  lists List[]
 }
 
 model List {
@@ -42,8 +42,10 @@ model ListItem {
   updatedAt DateTime @updatedAt
 
   name        String
-  description String
-  list        List    @relation(fields: [listId], references: [id])
-  listId      String
-  checked     Boolean @default(false)
+  description String?
+
+  list   List   @relation(fields: [listId], references: [id])
+  listId String
+
+  checked Boolean @default(false)
 }

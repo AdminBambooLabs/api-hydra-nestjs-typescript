@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { randomUUID } from 'node:crypto';
 import { createHashFromPassword } from 'src/utils';
 
 @Injectable()
@@ -14,7 +13,7 @@ export class UserService {
       const { password } = createUserDto;
       const hashPwd = await createHashFromPassword(password);
       const newUser = await this.prismaService.user.create({
-        data: { ...createUserDto, id: randomUUID(), password: hashPwd },
+        data: { ...createUserDto, password: hashPwd },
       });
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -39,7 +38,7 @@ export class UserService {
           id: true,
           email: true,
           name: true,
-          list: true,
+          lists: true,
           createdAt: true,
           updatedAt: true,
           password: false,
@@ -68,7 +67,7 @@ export class UserService {
           id: true,
           email: true,
           name: true,
-          list: true,
+          lists: true,
           createdAt: true,
           updatedAt: true,
           password: false,
@@ -108,7 +107,7 @@ export class UserService {
           id: true,
           email: true,
           name: true,
-          list: true,
+          lists: true,
           createdAt: true,
           updatedAt: true,
           password: false,
